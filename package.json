@@ -1,0 +1,38 @@
+{
+  "name": "composite",
+  "version": "0.0.1",
+  "description": "compose functions",
+  "keywords": [],
+  "author": "Raynos <raynos2@gmail.com>",
+  "repository": "git://github.com/Raynos/composite.git",
+  "main": "index",
+  "scripts": {
+    "test": "make test"
+  },
+  "homepage": "https://github.com/Raynos/composite",
+  "contributors": [
+    {
+      "name": "Jake Verbaten"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/Raynos/composite/issues",
+    "email": "raynos2@gmail.com"
+  },
+  "dependencies": {
+    "ap": "0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "1.2.0",
+    "sinon": "git://github.com/cjohansen/Sinon.JS.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/raynos/composite/raw/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": ">=0.4"
+  }
+}
