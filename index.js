@@ -1,5 +1,10 @@
-var partial = require("ap").curry,
-    slice = Array.prototype.slice
+"use strict";
+
+var partial = require("ap").partial
+    , slice = Array.prototype.slice
+    , globalScope = typeof global === "undefined" ? window : global
+
+compose.async = composeAsync
 
 module.exports = compose
 
@@ -12,17 +17,15 @@ function combineFunctions(memo, current) {
 }
    
 function applyInOrder(first, second) {
-    var result = first.apply(this, slice.call(arguments, 2))
-    return second.call(this, result)
+    var thisValue = this === globalScope || this === undefined ? {} : this
+
+    var result = first.apply(thisValue, slice.call(arguments, 2))
+    if (Array.isArray(result)) {
+        return second.apply(thisValue, result)
+    }
+    return second.call(thisValue, result)
 }
 
-
-function add(x, y)  {
-    return x + y
-}
-
-addOne = partial([1], add)
-
-var addOne = function (y) {
-    return add(1, y)
+function composeAsync() {
+    
 }

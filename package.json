@@ -20,11 +20,11 @@
     "email": "raynos2@gmail.com"
   },
   "dependencies": {
-    "ap": "0.0.1"
+    "ap": "0.1.0"
   },
   "devDependencies": {
-    "mocha": "1.2.0",
-    "sinon": "git://github.com/cjohansen/Sinon.JS.git"
+    "testling": "0.2.3",
+    "sinon": "git://github.com/Raynos/Sinon.JS.git"
   },
   "licenses": [
     {

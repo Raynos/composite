@@ -1,75 +1,130 @@
-var compose = require(".."),
-    composeAsync = compose.async,
-    sinon = require("sinon"),
-    assert = require("assert"),
-    ap = require("ap"),
-    partial = ap.curry
+var compose = require("..")
+    , composeAsync = compose.async
+    , sinon = require("sinon")
+    , assert = require("assert")
+    , curry = require("ap").curry
+    , test = require("testling")
+    , globalScope = typeof global === "undefined" ? window : global
 
-var assertHasCallCount = partial(partial, function (spy, count) {
-        assert.equal(this[spy].callCount, count, "spy was not called " +
-            count + " times")
-    }),
-    assertWasCalledWith = partial(partial, function (spy) {
-        var args = [].slice.call(arguments, 1)
-        assert.equal(this[spy].calledWith.apply(this[spy], args), true,
-            "spy was not calledWith " + args)
-    }),
-    assertIsValue = partial(partial, function (name, expected) {
-        assert.equal(expected, this[name], name + " is not " + expected)
-    }),
-    assertIsType = partial(partial, function (name, type) {
-        assert.equal(typeof this[name], type, name + " is not a " + type)
-    }),
-    callFunction = partial(partial, function (name, value) {
-        this.result = this[name](value)
-    })
+test("compose with empty functions", function (t) {
+    var a = sinon.spy()
+        , b = sinon.spy()
 
-context("calling composite", function () {
-    beforeEach(function () {
-        this.a = sinon.stub()
-        this.b = sinon.stub()
-        this.composed = compose(this.a, this.b)
-    })
+    var composed = compose(a, b)
+        , result = composed(5)
 
-    describe("with empty functions", function () {
-        it("should return a function", assertIsType("composed", "function"))
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(5), "a was not called with 5")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(undefined), "b was not called with undefined")
+    t.equal(result, undefined, "result is not undefined")
 
-        describe("and calling it", function () {
-            beforeEach(callFunction("composed", 5))
+    t.end()
+})
 
-            it("should invoke a once", assertHasCallCount("a", 1))
+test("compose with non-trivial functions", function (t) {
+    var a = sinon.stub().returns(4)
+        , b = sinon.stub().returns(8)
+        , composed = compose(a, b)
+        , result = composed(5)
 
-            it("should invoke a with 5", assertWasCalledWith("a", 5))
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(5), "a was not called with 5")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(4), "b was not called with 4")
+    t.equal(result, 8, "result is not 8")
 
-            it("should invoke b once", assertHasCallCount("b", 1))
+    t.end()
+})
 
-            it("should call b with undefined",
-                assertWasCalledWith("b", undefined))
+test("with array values", function (t)  {
+    var a = sinon.stub().returns([1,2,3])
+        , b = sinon.spy()
 
-            it("should return undefined", assertIsValue("result", undefined))
-        })
-    })
+    var composed = compose(a, b)
+        , result = composed(5)
 
-    describe("calling it with non-trivial functions", function () {
-        beforeEach(function () {
-            this.a.returns(4)
-            this.b.returns(8)
-        })
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(5), "a was not called with 5")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(1,2,3), "b was not called with 1,2,3")
+    t.equal(result, undefined, "result is not undefined")
 
-        it("should return a function", assertIsType("composed", "function"))
+    t.end()
+})
 
-        describe("and calling it", function () {
-            beforeEach(callFunction("composed", 5))
+test("with thisValue", function (t) {
+    var a = sinon.spy()
+        , b = sinon.spy()
+        , thisValue = {}
 
-            it("should invoke a once", assertHasCallCount("a", 1))
+    var composed = compose(a, b)
+        , result = composed.call(thisValue)
 
-            it("should invoke a with 5", assertWasCalledWith("a", 5))
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(undefined), "a was not called with undefined")
+    t.equal(a.thisValues[0], thisValue,
+        "a was not called with correct this value")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(undefined), "b was not called with undefined")
+    t.equal(b.thisValues[0], thisValue,
+        "b was not called with correct this value")
+    t.equal(result, undefined, "result is not undefined")
 
-            it("should invoke b once", assertHasCallCount("b", 1))
+    t.end()
+})
 
-            it("should invoke b with 4", assertWasCalledWith("b", 4))
+test("with a fresh thisValue", function (t) {
+    var a = sinon.spy()
+        , b = sinon.spy()
 
-            it("should return 8", assertIsValue("result", 8))
-        })
-    })
+    var composed = compose(a, b)
+        , result = composed()
+
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(undefined), "a was not called with undefined")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(undefined), "b was not called with undefined")
+    t.equal(result, undefined, "result is not undefined")
+    t.equal(a.thisValues[0], b.thisValues[0],
+        "thisValues are not the same")
+    t.equal(typeof a.thisValues[0], "object",
+        "this value is not an object")
+    t.ok(a.thisValues[0] !== globalScope, "thisValue is the global object")
+
+    t.end()
+})
+
+test("with multiple functions", function (t) {
+    var a = sinon.spy()
+        , b = sinon.spy()
+        , c = sinon.spy()
+        , d = sinon.spy()
+
+    var composed = compose(a, b, c, d)
+        , result = composed()
+
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(undefined), "a was not called with undefined")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(undefined), "b was not called with undefined")
+    t.ok(c.calledOnce, "c was not called once")
+    t.ok(c.calledWith(undefined), "c was not called with undefined")
+    t.ok(d.calledOnce, "d was not called once")
+    t.ok(d.calledWith(undefined), "d was not called with undefined")
+    t.equal(result, undefined, "result is not undefined")
+
+    t.end()
+})
+
+test("calling composite.async", function (t) {
+    t.ok(true, "-.-")
+
+    t.end()
 })
