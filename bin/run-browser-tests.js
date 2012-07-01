@@ -35,7 +35,6 @@ function runCommand(cmd, next) {
         , proxyPort = 54045 + offset
         , browser
 
-    console.log("spawning echo testling server")
     createServers({
         files: ['./test/unit.js']
         , proxy: 'localhost:' + proxyPort
@@ -48,7 +47,6 @@ function runCommand(cmd, next) {
     }, function (uri, ports, servers) {
         offset += 2
 
-        console.log("spawning ", cmd + " localhost:" + port)
         browser = spawn(cmd, ["localhost:" + port])
         runnerDomain.add(browser)
         browser.stdout.pipe(process.stdout)

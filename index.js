@@ -27,5 +27,25 @@ function applyInOrder(first, second) {
 }
 
 function composeAsync() {
-    
+    return slice.call(arguments).reduce(combineFunctionsAsync)
+}
+
+function combineFunctionsAsync(memo, outer) {
+    return partial(applyInOrderAsync, memo, outer)
+}
+
+function applyInOrderAsync(memo, outer) {
+    var args = slice.call(arguments, 2)
+        , callbackIndex = args.length - 1
+        , inner = args[callbackIndex]
+
+    args[callbackIndex] = partial(applyOuter, outer, inner)
+
+    memo.apply(this, args)
+}
+
+function applyOuter(outer, inner) {
+    var args = slice.call(arguments, 2).concat(inner)
+
+    outer.apply(this, args)
 }

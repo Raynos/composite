@@ -26,7 +26,8 @@ test("compose with empty functions", function (t) {
 test("compose with non-trivial functions", function (t) {
     var a = sinon.stub().returns(4)
         , b = sinon.stub().returns(8)
-        , composed = compose(a, b)
+
+    var composed = compose(a, b)
         , result = composed(5)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -39,7 +40,7 @@ test("compose with non-trivial functions", function (t) {
     t.end()
 })
 
-test("with array values", function (t)  {
+test("compose with array values", function (t)  {
     var a = sinon.stub().returns([1,2,3])
         , b = sinon.spy()
 
@@ -56,7 +57,7 @@ test("with array values", function (t)  {
     t.end()
 })
 
-test("with thisValue", function (t) {
+test("compose with thisValue", function (t) {
     var a = sinon.spy()
         , b = sinon.spy()
         , thisValue = {}
@@ -78,7 +79,7 @@ test("with thisValue", function (t) {
     t.end()
 })
 
-test("with a fresh thisValue", function (t) {
+test("compose with a fresh thisValue", function (t) {
     var a = sinon.spy()
         , b = sinon.spy()
 
@@ -100,7 +101,7 @@ test("with a fresh thisValue", function (t) {
     t.end()
 })
 
-test("with multiple functions", function (t) {
+test("compose with multiple functions", function (t) {
     var a = sinon.spy()
         , b = sinon.spy()
         , c = sinon.spy()
@@ -123,8 +124,29 @@ test("with multiple functions", function (t) {
     t.end()
 })
 
-test("calling composite.async", function (t) {
-    t.ok(true, "-.-")
+test("composeAsync with empty functions", function (t) {
+    var a = sinon.stub().callsArg(0)
+        , b = sinon.stub().callsArg(0)
+        , callback = sinon.spy()
 
+    var composed = composeAsync(a, b)
+        , result = composed(callback)
+
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(sinon.match.func),
+        "a was not called with a function")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(sinon.match.func),
+        "b was not called with a function")
+    t.ok(callback.calledOnce, "callback was not called once")
+    t.ok(callback.calledWith(undefined),
+        "callback was not called with undefined")
+    t.equal(result, undefined, "result is not undefined")
+
+    t.end()
+})
+
+test("composeASync with non-trivial functions", function (t) {
     t.end()
 })

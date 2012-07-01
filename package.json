@@ -20,10 +20,13 @@
     "email": "raynos2@gmail.com"
   },
   "dependencies": {
-    "ap": "0.1.0"
+    "ap": "0.1.0",
+    "event-stream": "~2.1.2"
   },
   "devDependencies": {
-    "testling": "0.2.3",
+    "testling": "0.2.5",
+    "tap": "~0.2.5",
+    "testem": "git://github.com/Raynos/testem#implement-custom-runner",
     "sinon": "git://github.com/Raynos/Sinon.JS.git"
   },
   "licenses": [
