@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "ap": "0.1.0",
-    "event-stream": "~2.1.2"
+    "event-stream": "~2.1.2",
+    "socket.io-client": "~0.9.6"
   },
   "devDependencies": {
     "testling": "0.2.5",

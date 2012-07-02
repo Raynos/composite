@@ -3,12 +3,14 @@ var browserify = require("browserify")
     , fs = require("fs")
 
 fs.watch(path.join(process.cwd(), "index.js"), writeBundle)
+fs.watch(path.join(process.cwd(), "bin"), writeBundle)
+fs.watch(path.join(process.cwd(), "node_modules"), writeBundle)
 fs.watch(path.join(process.cwd(), "test"), writeBundle)
 
 writeBundle()
 
 function writeBundle() {
-    console.log("writing bundle")
+    console.log("writing bundle" + (new Date).toString())
 
     var bundle = browserify()
 

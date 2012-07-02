@@ -9,8 +9,13 @@ test-specific-browser:
 testem-test-builder:
 	node ./bin/setup-testem-folder
 
+testem-node:
+	node ./bin/node-testem
+
 testem:
-	./node_modules/.bin/testem
+	./node_modules/.bin/testem \
+		--debuglog testem.log \
+		--debug
 
 browsers-test:
 	node ./bin/run-browser-tests

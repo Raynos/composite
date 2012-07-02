@@ -61,7 +61,8 @@ function writer(data) {
 }
 
 function ender() {
-    emit("all-tests-results", results)
+    console.log("no end? :(")
+    emit("all-test-results", results)
 }
 
 function emit() {

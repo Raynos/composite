@@ -148,5 +148,24 @@ test("composeAsync with empty functions", function (t) {
 })
 
 test("composeASync with non-trivial functions", function (t) {
+    var a = sinon.stub().callsArgWith(1, 5)
+        , b = sinon.stub().callsArgWith(1, 8)
+        , callback = sinon.spy()
+
+    var composed = composeAsync(a, b)
+        , result = composed(10, callback)
+
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(10, sinon.match.func),
+        "a was not called with a 10 and a function")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(5, sinon.match.func),
+        "b was not called with a 5 and a function")
+    t.ok(callback.calledOnce, "callback was not called once")
+    t.ok(callback.calledWith(8),
+        "callback was not called with 8")
+    t.equal(result, undefined, "result is not undefined")
+
     t.end()
 })
