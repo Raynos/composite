@@ -22,12 +22,14 @@
   "dependencies": {
     "ap": "0.1.0",
     "event-stream": "~2.1.2",
-    "socket.io-client": "~0.9.6"
+    "socket.io-client": "~0.9.6",
+    "browserify": "~1.13.5",
+    "testem-testling-adapter": "0.0.1"
   },
   "devDependencies": {
-    "testling": "0.2.5",
+    "testling": "git://github.com/Raynos/testling#implement-render",
     "tap": "~0.2.5",
-    "testem": "git://github.com/Raynos/testem#implement-custom-runner",
+    "testem": "git://github.com/Raynos/testem",
     "sinon": "git://github.com/Raynos/Sinon.JS.git"
   },
   "licenses": [

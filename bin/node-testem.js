@@ -17,7 +17,6 @@ socket.on('start-tests', startTests)
 
 function startTests() {
     socket.emit('browser-login', 'Node')
-    console.log("starting tests")
     if (runner) {
         runner.removeListener("file", onFile)
         runner.removeListener("end", onEnd)
@@ -47,8 +46,6 @@ function onFile(file, data, details) {
         first = true
         emit("tests-start")
     }
-
-    console.log("runner got file", data)
 
     details.list.forEach(function (data) {
         if (data.id === undefined) {
@@ -85,7 +82,6 @@ function onFile(file, data, details) {
 }
 
 function onEnd() {
-    console.log("runner ended")
     emit("all-test-results", results)
 }
 

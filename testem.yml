@@ -1,3 +1,5 @@
 framework: custom
+browserify: true
 src_files:
-- testem/**/*.js
+- test/**/*.js
+watch_files: ./**/*.js

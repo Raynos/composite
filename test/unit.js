@@ -147,7 +147,7 @@ test("composeAsync with empty functions", function (t) {
     t.end()
 })
 
-test("composeASync with non-trivial functions", function (t) {
+test("composeAsync with non-trivial functions", function (t) {
     var a = sinon.stub().callsArgWith(1, 5)
         , b = sinon.stub().callsArgWith(1, 8)
         , callback = sinon.spy()

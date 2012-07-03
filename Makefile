@@ -6,9 +6,6 @@ test-specific-browser:
 		--browser=$(browser) \
 		./test/unit.js
 
-testem-test-builder:
-	node ./bin/setup-testem-folder
-
 testem-node:
 	node ./bin/node-testem
 
