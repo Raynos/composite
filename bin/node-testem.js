@@ -11,12 +11,13 @@ var io = require("socket.io-client")
         , tests: []
     }
 
-socket.emit('browser-login', 'Node')
-socket.on('reconnect', startTests)
-socket.on('start-tests', startTests)
+socket.emit("browser-login", "Node")
+socket.on("connect", startTests)
+socket.on("reconnect", startTests)
+socket.on("start-tests", startTests)
 
 function startTests() {
-    socket.emit('browser-login', 'Node')
+    socket.emit("browser-login", "Node")
     if (runner) {
         runner.removeListener("file", onFile)
         runner.removeListener("end", onEnd)
@@ -24,7 +25,7 @@ function startTests() {
 
     runner = new Runner({
         argv: {
-            remain: "test"
+            remain: "test/unit.js"
         }
         , version: false
         , help: false
