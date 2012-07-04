@@ -1,5 +1,5 @@
 node-test:
-	./node_modules/.bin/tap --stderr ./test
+	./node_modules/.bin/tap --stderr ./test/unit.js
 
 test-specific-browser:
 	./node_modules/.bin/testling \
