@@ -24,9 +24,8 @@
   },
   "devDependencies": {
     "testling": "git://github.com/Raynos/testling#implement-render",
-    "testem": "git://github.com/Raynos/testem",
-    "sinon": "git://github.com/Raynos/Sinon.JS.git",
-    "testem-testling-adapter": "0.1.1"
+    "testem": "git://github.com/Raynos/testem#master",
+    "sinon": "git://github.com/Raynos/Sinon.JS.git"
   },
   "licenses": [
     {
