@@ -1,0 +1,7 @@
+{
+    "framework": "custom"
+    , "browserify": true
+    , "src_files": ["test/**/*.js"]
+    , "watch_files": "./**/*.js"
+    , "node": "test/unit.js"
+}

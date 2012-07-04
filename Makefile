@@ -6,9 +6,6 @@ test-specific-browser:
 		--browser=$(browser) \
 		./test/unit.js
 
-testem-node:
-	node ./bin/node-testem
-
 testem:
 	./node_modules/.bin/testem \
 		--debuglog testem.log \

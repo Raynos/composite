@@ -24,11 +24,9 @@
   },
   "devDependencies": {
     "testling": "git://github.com/Raynos/testling#implement-render",
-    "tap": "~0.2.5",
     "testem": "git://github.com/Raynos/testem",
     "sinon": "git://github.com/Raynos/Sinon.JS.git",
-    "testem-testling-adapter": "0.1.1",
-    "socket.io-client": "~0.9.6"
+    "testem-testling-adapter": "0.1.1"
   },
   "licenses": [
     {
