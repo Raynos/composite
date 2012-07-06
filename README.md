@@ -7,6 +7,8 @@ Compose functions together
     var compose = require("composite"),
         composeAsync = compose.async
 
+    // note the last argument gets called first just like the mathematical 
+    // composition operator
     var composed = compose(function (b) {
         return b * 2
     }, function (a) {
