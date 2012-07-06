@@ -60,9 +60,10 @@ test("compose with array values", function (t)  {
 test("compose with thisValue", function (t) {
     var a = sinon.spy()
         , b = sinon.spy()
+        , c = sinon.spy()
         , thisValue = {}
 
-    var composed = compose(b, a)
+    var composed = compose(c, b, a)
         , result = composed.call(thisValue)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -74,29 +75,11 @@ test("compose with thisValue", function (t) {
     t.ok(b.calledWith(undefined), "b was not called with undefined")
     t.equal(b.thisValues[0], thisValue,
         "b was not called with correct this value")
+    t.ok(c.calledOnce, "c was not called once")
+    t.ok(c.calledWith(undefined), "c was not called with undefined")
+    t.equal(c.thisValues[0], thisValue,
+        "c was not called with correct this value")
     t.equal(result, undefined, "result is not undefined")
-
-    t.end()
-})
-
-test("compose with a fresh thisValue", function (t) {
-    var a = sinon.spy()
-        , b = sinon.spy()
-
-    var composed = compose(b, a)
-        , result = composed()
-
-    t.equal(typeof composed, "function", "composed is not a function")
-    t.ok(a.calledOnce, "a was not called once")
-    t.ok(a.calledWith(undefined), "a was not called with undefined")
-    t.ok(b.calledOnce, "b was not called once")
-    t.ok(b.calledWith(undefined), "b was not called with undefined")
-    t.equal(result, undefined, "result is not undefined")
-    t.equal(a.thisValues[0], b.thisValues[0],
-        "thisValues are not the same")
-    t.equal(typeof a.thisValues[0], "object",
-        "this value is not an object")
-    t.ok(a.thisValues[0] !== globalScope, "thisValue is the global object")
 
     t.end()
 })
@@ -171,14 +154,13 @@ test("composeAsync with non-trivial functions", function (t) {
 })
 
 test("composeAsync with thisValue", function (t) {
-    var otherThisValue = {}
-        , a = sinon.stub().callsArgOn(0, otherThisValue)
-        , resultThisValue = {}
-        , b = sinon.stub().callsArgOn(0, resultThisValue)
+    var a = sinon.stub().callsArg(0)
+        , b = sinon.stub().callsArg(0)
+        , c = sinon.stub().callsArg(0)
         , callback = sinon.spy()
         , thisValue = {}
 
-    var composed = composeAsync(b, a)
+    var composed = composeAsync(c, b, a)
         , result = composed.call(thisValue, callback)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -188,39 +170,14 @@ test("composeAsync with thisValue", function (t) {
         "a was called with incorrect thisValue")
     t.ok(b.calledOnce, "b was not called once")
     t.ok(b.calledWith(sinon.match.func), "b was not called with a function")
-    t.equal(b.thisValues[0], otherThisValue,
+    t.equal(b.thisValues[0], thisValue,
         "b was called with incorrect thisValue")
+    t.ok(c.calledOnce, "c was not called once")
+    t.ok(c.calledWith(sinon.match.func), "c was not called with a function")
+    t.equal(c.thisValues[0], thisValue,
+        "c was called with incorrect thisValue")
     t.ok(callback.calledOnce, "callback was not called once")
-    t.equal(callback.thisValues[0], resultThisValue,
-        "callback was called with incorrect thisValue")
-    t.equal(callback.args[0].length, 0, "callback was called with arguments")
-    t.equal(result, undefined, "result is not undefined")
-
-    t.end()
-})
-
-test("composeAsync with fresh thisValue", function (t) {
-    var a = sinon.stub().callsArg(0)
-        , b = sinon.stub().callsArg(0)
-        , callback = sinon.spy()
-
-    var composed = composeAsync(b, a)
-        , result = composed(callback)
-
-    t.equal(typeof composed, "function", "composed is not a function")
-    t.ok(a.calledOnce, "a was not called once")
-    t.ok(a.calledWith(sinon.match.func), "a was not called with a function")
-    t.equal(a.thisValues[0], b.thisValues[0],
-        "a was called with incorrect thisValue")
-    t.equal(typeof a.thisValues[0], "object",
-        "this value is not an object")
-    t.ok(a.thisValues[0] !== globalScope, "thisValue is the global object")
-    t.ok(b.calledOnce, "b was not called once")
-    t.ok(b.calledWith(sinon.match.func), "b was not called with a function")
-    t.equal(b.thisValues[0], callback.thisValues[0],
-        "b was called with incorrect thisValue")
-    t.ok(callback.calledOnce, "callback was not called once")
-    t.equal(callback.thisValues[0], a.thisValues[0],
+    t.equal(callback.thisValues[0], thisValue,
         "callback was called with incorrect thisValue")
     t.equal(callback.args[0].length, 0, "callback was called with arguments")
     t.equal(result, undefined, "result is not undefined")
