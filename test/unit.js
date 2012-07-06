@@ -149,7 +149,7 @@ test("composeAsync with empty functions", function (t) {
 
 test("composeAsync with non-trivial functions", function (t) {
     var a = sinon.stub().callsArgWith(1, 5)
-        , b = sinon.stub().callsArgWith(1, 8)
+        , b = sinon.stub().callsArgWith(1, 8, 4)
         , callback = sinon.spy()
 
     var composed = composeAsync(b, a)
@@ -163,8 +163,66 @@ test("composeAsync with non-trivial functions", function (t) {
     t.ok(b.calledWith(5, sinon.match.func),
         "b was not called with a 5 and a function")
     t.ok(callback.calledOnce, "callback was not called once")
-    t.ok(callback.calledWith(8),
+    t.ok(callback.calledWith(8, 4),
         "callback was not called with 8")
+    t.equal(result, undefined, "result is not undefined")
+
+    t.end()
+})
+
+test("composeAsync with thisValue", function (t) {
+    var otherThisValue = {}
+        , a = sinon.stub().callsArgOn(0, otherThisValue)
+        , resultThisValue = {}
+        , b = sinon.stub().callsArgOn(0, resultThisValue)
+        , callback = sinon.spy()
+        , thisValue = {}
+
+    var composed = composeAsync(b, a)
+        , result = composed.call(thisValue, callback)
+
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(sinon.match.func), "a was not called with a function")
+    t.equal(a.thisValues[0], thisValue,
+        "a was called with incorrect thisValue")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(sinon.match.func), "b was not called with a function")
+    t.equal(b.thisValues[0], otherThisValue,
+        "b was called with incorrect thisValue")
+    t.ok(callback.calledOnce, "callback was not called once")
+    t.equal(callback.thisValues[0], resultThisValue,
+        "callback was called with incorrect thisValue")
+    t.equal(callback.args[0].length, 0, "callback was called with arguments")
+    t.equal(result, undefined, "result is not undefined")
+
+    t.end()
+})
+
+test("composeAsync with fresh thisValue", function (t) {
+    var a = sinon.stub().callsArg(0)
+        , b = sinon.stub().callsArg(0)
+        , callback = sinon.spy()
+
+    var composed = composeAsync(b, a)
+        , result = composed(callback)
+
+    t.equal(typeof composed, "function", "composed is not a function")
+    t.ok(a.calledOnce, "a was not called once")
+    t.ok(a.calledWith(sinon.match.func), "a was not called with a function")
+    t.equal(a.thisValues[0], b.thisValues[0],
+        "a was called with incorrect thisValue")
+    t.equal(typeof a.thisValues[0], "object",
+        "this value is not an object")
+    t.ok(a.thisValues[0] !== globalScope, "thisValue is the global object")
+    t.ok(b.calledOnce, "b was not called once")
+    t.ok(b.calledWith(sinon.match.func), "b was not called with a function")
+    t.equal(b.thisValues[0], callback.thisValues[0],
+        "b was called with incorrect thisValue")
+    t.ok(callback.calledOnce, "callback was not called once")
+    t.equal(callback.thisValues[0], a.thisValues[0],
+        "callback was called with incorrect thisValue")
+    t.equal(callback.args[0].length, 0, "callback was called with arguments")
     t.equal(result, undefined, "result is not undefined")
 
     t.end()

@@ -10,7 +10,7 @@ test:
 	./node_modules/.bin/testem \
 		--file testem.json \
 		--debuglog testem.log \
-		--debug
+		--debug 2> testem.err
 
 browsers-test:
 	node ./bin/run-browser-tests

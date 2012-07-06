@@ -9,7 +9,7 @@ compose.async = composeAsync
 module.exports = compose
 
 function compose() {
-    return slice.call(arguments).reduceRight(combineFunctions)
+    return slice.call(arguments).reduce(combineFunctions)
 }
 
 function combineFunctions(memo, current) {
@@ -27,7 +27,7 @@ function applyInOrder(first, second) {
 }
 
 function composeAsync() {
-    return slice.call(arguments).reduce(combineFunctionsAsync)
+    return slice.call(arguments).reduceRight(combineFunctionsAsync)
 }
 
 function combineFunctionsAsync(memo, outer) {
@@ -35,17 +35,31 @@ function combineFunctionsAsync(memo, outer) {
 }
 
 function applyInOrderAsync(memo, outer) {
-    var args = slice.call(arguments, 2)
+    var needsCleanThisValue = this === globalScope || this === undefined
+        , thisValue = needsCleanThisValue ? {} : this
+        , args = slice.call(arguments, 2)
         , callbackIndex = args.length - 1
         , inner = args[callbackIndex]
 
-    args[callbackIndex] = partial(applyOuter, outer, inner)
+    if (needsCleanThisValue) {
+        inner = inner.bind(thisValue)
+        args[callbackIndex] = partial(applyOuterWithThis, outer,
+            inner, thisValue)
+    } else {
+        args[callbackIndex] = partial(applyOuter, outer, inner)
+    }
 
-    memo.apply(this, args)
+    memo.apply(thisValue, args)
 }
 
 function applyOuter(outer, inner) {
     var args = slice.call(arguments, 2).concat(inner)
 
     outer.apply(this, args)
+}
+
+function applyOuterWithThis(outer, inner, thisValue) {
+    var args = slice.call(arguments, 3).concat(inner)
+
+    outer.apply(thisValue, args)
 }
