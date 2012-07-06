@@ -6,9 +6,6 @@
   "author": "Raynos <raynos2@gmail.com>",
   "repository": "git://github.com/Raynos/composite.git",
   "main": "index",
-  "scripts": {
-    "test": "make test"
-  },
   "homepage": "https://github.com/Raynos/composite",
   "contributors": [
     {
