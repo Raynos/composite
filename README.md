@@ -50,6 +50,21 @@ Compose functions together
         cb(err, this.data && JSON.parse(this.data))
     }
 
+## Example Working with errors
+
+    composeAsync(function (err, data, cb) {
+        // note how the callback is still the third parameter.
+        // This is because asyncCompose ensures cb is always at least the
+        // last parameter
+        if (err) {
+            return cb(err)
+        }
+    }, function (cb) {
+        cb(new Error("oops"))
+    })(function (err) {
+        // we got the oops err
+    })
+
 ## Installation
 
 `npm install composite`

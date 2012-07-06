@@ -35,7 +35,12 @@ function combineFunctionsAsync(memo, outer, index) {
 function applyInOrderAsync(memo, outer) {
     var args = slice.call(arguments, 2)
         , callbackIndex = args.length - 1
+        , memoLength = memo.length
         , inner = args[callbackIndex].bind(this)
+
+    if (callbackIndex < memoLength - 1) {
+        callbackIndex = memoLength - 1
+    }
 
     args[callbackIndex] = partial(applyOuter, outer, inner, this)
 
@@ -43,7 +48,15 @@ function applyInOrderAsync(memo, outer) {
 }
 
 function applyOuter(outer, inner, thisValue) {
-    var args = slice.call(arguments, 3).concat(inner)
+    var args = slice.call(arguments, 3)
+        , callbackIndex = args.length
+        , outerIndex = outer.length - 1
+
+    if (callbackIndex < outerIndex) {
+        args[outerIndex] = inner
+    } else {
+        args[callbackIndex] = inner
+    }
 
     outer.apply(thisValue, args)
 }

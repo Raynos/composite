@@ -184,3 +184,22 @@ test("composeAsync with thisValue", function (t) {
 
     t.end()
 })
+
+test("composeAsync with callback index", function (t) {
+    composeAsync(b, a)(callback)
+
+    function a(cb) {
+        t.equal(typeof cb, "function", "cb is not a function")
+        cb(null)
+    }
+
+    function b(err, data, cb) {
+        t.equal(arguments.length, 3, "arguments length is not three")
+        cb()
+    }
+
+    function callback() {
+        t.equal(arguments.length, 0, "arguments length is not zero")
+        t.end()
+    }
+})
