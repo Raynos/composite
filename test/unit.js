@@ -10,7 +10,7 @@ test("compose with empty functions", function (t) {
     var a = sinon.spy()
         , b = sinon.spy()
 
-    var composed = compose(a, b)
+    var composed = compose(b, a)
         , result = composed(5)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -27,7 +27,7 @@ test("compose with non-trivial functions", function (t) {
     var a = sinon.stub().returns(4)
         , b = sinon.stub().returns(8)
 
-    var composed = compose(a, b)
+    var composed = compose(b, a)
         , result = composed(5)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -44,7 +44,7 @@ test("compose with array values", function (t)  {
     var a = sinon.stub().returns([1,2,3])
         , b = sinon.spy()
 
-    var composed = compose(a, b)
+    var composed = compose(b, a)
         , result = composed(5)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -62,7 +62,7 @@ test("compose with thisValue", function (t) {
         , b = sinon.spy()
         , thisValue = {}
 
-    var composed = compose(a, b)
+    var composed = compose(b, a)
         , result = composed.call(thisValue)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -83,7 +83,7 @@ test("compose with a fresh thisValue", function (t) {
     var a = sinon.spy()
         , b = sinon.spy()
 
-    var composed = compose(a, b)
+    var composed = compose(b, a)
         , result = composed()
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -107,7 +107,7 @@ test("compose with multiple functions", function (t) {
         , c = sinon.spy()
         , d = sinon.spy()
 
-    var composed = compose(a, b, c, d)
+    var composed = compose(d, c, b, a)
         , result = composed()
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -129,7 +129,7 @@ test("composeAsync with empty functions", function (t) {
         , b = sinon.stub().callsArg(0)
         , callback = sinon.spy()
 
-    var composed = composeAsync(a, b)
+    var composed = composeAsync(b, a)
         , result = composed(callback)
 
     t.equal(typeof composed, "function", "composed is not a function")
@@ -152,7 +152,7 @@ test("composeAsync with non-trivial functions", function (t) {
         , b = sinon.stub().callsArgWith(1, 8)
         , callback = sinon.spy()
 
-    var composed = composeAsync(a, b)
+    var composed = composeAsync(b, a)
         , result = composed(10, callback)
 
     t.equal(typeof composed, "function", "composed is not a function")

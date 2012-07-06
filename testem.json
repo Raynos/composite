@@ -6,5 +6,6 @@
         , "node_modules/testem/adapters/testling.js"
     ]
     , "watch_files": "./**/*.js"
-    , "node": "test/unit.js"
+    , "node": "node_modules/.bin/tap"
+    , "node-args": ["--tap", "test/unit.js"]
 }
