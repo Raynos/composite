@@ -5,6 +5,7 @@ var partial = require("ap").partial
     , globalScope = typeof global === "undefined" ? window : global
 
 compose.async = composeAsync
+compose.cc = cc
 
 module.exports = compose
 
@@ -78,3 +79,17 @@ function createAsyncComposite(fns) {
         f.apply(thisValue, args)
     }
 }
+
+function cc() {
+    var composite = composeAsync.apply(null, arguments)
+
+    return caller
+
+    function caller() {
+        var args = [].slice.call(arguments)
+        args.push(noop)
+        composite.apply({}, args)
+    }
+}
+
+function noop() {}
