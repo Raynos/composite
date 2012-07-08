@@ -1,7 +1,7 @@
 {
   "name": "composite",
   "version": "0.2.3",
-  "description": "compose functions",
+  "description": "compose functions together",
   "keywords": [],
   "author": "Raynos <raynos2@gmail.com>",
   "repository": "git://github.com/Raynos/composite.git",
