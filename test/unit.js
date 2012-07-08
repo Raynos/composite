@@ -154,14 +154,17 @@ test("composeAsync with non-trivial functions", function (t) {
 })
 
 test("composeAsync without callback", function (t) {
-    var a = sinon.stub().yields()
+    var a = function (n, cb) {
+            t.equal(50, n, "was not called with correct n")
+            cb(5)
+        }
         , b = sinon.spy()
 
     var composed = composeAsync(b, a)
-    composed()
+    composed(50)
 
-    t.equal(a.callCount, 1, "a was not called once")
     t.equal(b.callCount, 1, "b was not called once")
+    t.ok(b.calledWith(5), "b not called correctly")
 
     t.end()
 })
