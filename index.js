@@ -28,47 +28,6 @@ function composeAsync() {
     return createAsyncComposite(slice.call(arguments))
 }
 
-// function combineFunctionsAsync(memo, outer, index) {
-//     return partial(applyInOrderAsync, memo, outer)
-// }
-
-// function applyInOrderAsync(memo, outer) {
-//     var args = slice.call(arguments, 2)
-//         , callbackIndex = args.length - 1
-//         , memoLength = memo.length
-//         , inner = args[callbackIndex]
-
-//     if (typeof inner === "function") {
-//         inner = inner.bind(this)
-//     }
-
-//     if (callbackIndex < memoLength - 1) {
-//         callbackIndex = memoLength - 1
-//     }
-
-//     if (callbackIndex < 0) {
-//         callbackIndex = 0
-//     }
-
-//     args[callbackIndex] = partial(applyOuter, outer, inner, this)
-
-//     memo.apply(this, args)
-// }
-
-// function applyOuter(outer, inner, thisValue) {
-//     var args = slice.call(arguments, 3)
-//         , callbackIndex = args.length
-//         , outerIndex = outer.length - 1
-
-//     if (callbackIndex < outerIndex) {
-//         args[outerIndex] = inner
-//     } else {
-//         args[callbackIndex] = inner
-//     }
-
-//     outer.apply(thisValue, args)
-// }
-
 function createAsyncComposite(fns) {
     var index = fns.length - 1
         , thisValue
