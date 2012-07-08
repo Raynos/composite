@@ -154,17 +154,26 @@ test("composeAsync with non-trivial functions", function (t) {
 })
 
 test("composeAsync without callback", function (t) {
+    var count = 0
     var a = function (n, cb) {
-            t.equal(50, n, "was not called with correct n")
+            t.equal(this, thisValue, "this value is incorrect")
+            t.equal("function", typeof n, "was not called with correct n")
+            t.equal(arguments.length, 2, "does not have two arguments")
+            t.equal(count, 0, "b called before a")
             cb(5)
         }
-        , b = sinon.spy()
+        , b = sinon.spy(function (n, cb) { count++; cb() })
+        , c = sinon.spy()
+        , thisValue = {}
 
-    var composed = composeAsync(b, a)
-    composed(50)
+    var composed = composeAsync(c, b, a)
+    composed.call(thisValue, function () {}, function () {})
 
     t.equal(b.callCount, 1, "b was not called once")
     t.ok(b.calledWith(5), "b not called correctly")
+    t.ok(b.calledOn(thisValue), "b called with incorrect thisvalue")
+    t.ok(c.calledOnce, "c not called once")
+    t.ok(b.calledBefore(c), "c called before b")
 
     t.end()
 })

@@ -25,46 +25,97 @@ function applyInOrder(first, second) {
 }
 
 function composeAsync() {
-    return slice.call(arguments).reduceRight(combineFunctionsAsync)
+    return createAsyncComposite(slice.call(arguments))
 }
 
-function combineFunctionsAsync(memo, outer, index) {
-    return partial(applyInOrderAsync, memo, outer)
-}
+// function combineFunctionsAsync(memo, outer, index) {
+//     return partial(applyInOrderAsync, memo, outer)
+// }
 
-function applyInOrderAsync(memo, outer) {
-    var args = slice.call(arguments, 2)
-        , callbackIndex = args.length - 1
-        , memoLength = memo.length
-        , inner = args[callbackIndex]
+// function applyInOrderAsync(memo, outer) {
+//     var args = slice.call(arguments, 2)
+//         , callbackIndex = args.length - 1
+//         , memoLength = memo.length
+//         , inner = args[callbackIndex]
 
-    if (typeof inner === "function") {
-        inner = inner.bind(this)
+//     if (typeof inner === "function") {
+//         inner = inner.bind(this)
+//     }
+
+//     if (callbackIndex < memoLength - 1) {
+//         callbackIndex = memoLength - 1
+//     }
+
+//     if (callbackIndex < 0) {
+//         callbackIndex = 0
+//     }
+
+//     args[callbackIndex] = partial(applyOuter, outer, inner, this)
+
+//     memo.apply(this, args)
+// }
+
+// function applyOuter(outer, inner, thisValue) {
+//     var args = slice.call(arguments, 3)
+//         , callbackIndex = args.length
+//         , outerIndex = outer.length - 1
+
+//     if (callbackIndex < outerIndex) {
+//         args[outerIndex] = inner
+//     } else {
+//         args[callbackIndex] = inner
+//     }
+
+//     outer.apply(thisValue, args)
+// }
+
+function createAsyncComposite(fns) {
+    var index = fns.length - 1
+        , thisValue
+        , finishCallback
+
+    return callFirst
+
+    function callNext() {
+        var args = slice.call(arguments)
+            , f = fns[index--]
+            , functionIndex = f.length - 1
+            , callbackIndex = args.length
+
+        if (callbackIndex < functionIndex) {
+            callbackIndex = functionIndex
+        }
+
+        if (index === -1) {
+            args[callbackIndex] = finishCallback
+        } else {
+            args[callbackIndex] = callNext
+        }
+
+        f.apply(thisValue, args)
     }
 
-    if (callbackIndex < memoLength - 1) {
-        callbackIndex = memoLength - 1
+    function callFirst() {
+        var args = slice.call(arguments)
+            , f = fns[index--]
+            , functionIndex = f.length - 1
+            , callbackIndex = args.length
+            , lastArg = args[callbackIndex - 1]
+
+        thisValue = this
+
+        if (typeof lastArg === "function") {
+            finishCallback = lastArg.bind(thisValue)
+            args.pop()
+            callbackIndex--
+        }
+
+        if (callbackIndex < functionIndex) {
+            callbackIndex = functionIndex
+        }
+
+        args[callbackIndex] = callNext
+
+        f.apply(thisValue, args)
     }
-
-    if (callbackIndex < 0) {
-        callbackIndex = 0
-    }
-
-    args[callbackIndex] = partial(applyOuter, outer, inner, this)
-
-    memo.apply(this, args)
-}
-
-function applyOuter(outer, inner, thisValue) {
-    var args = slice.call(arguments, 3)
-        , callbackIndex = args.length
-        , outerIndex = outer.length - 1
-
-    if (callbackIndex < outerIndex) {
-        args[outerIndex] = inner
-    } else {
-        args[callbackIndex] = inner
-    }
-
-    outer.apply(thisValue, args)
 }
