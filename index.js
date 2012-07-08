@@ -36,10 +36,18 @@ function applyInOrderAsync(memo, outer) {
     var args = slice.call(arguments, 2)
         , callbackIndex = args.length - 1
         , memoLength = memo.length
-        , inner = args[callbackIndex].bind(this)
+        , inner = args[callbackIndex]
+
+    if (typeof inner === "function") {
+        inner = inner.bind(this)
+    }
 
     if (callbackIndex < memoLength - 1) {
         callbackIndex = memoLength - 1
+    }
+
+    if (callbackIndex < 0) {
+        callbackIndex = 0
     }
 
     args[callbackIndex] = partial(applyOuter, outer, inner, this)

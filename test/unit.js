@@ -153,6 +153,19 @@ test("composeAsync with non-trivial functions", function (t) {
     t.end()
 })
 
+test("composeAsync without callback", function (t) {
+    var a = sinon.stub().yields()
+        , b = sinon.spy()
+
+    var composed = composeAsync(b, a)
+    composed()
+
+    t.equal(a.callCount, 1, "a was not called once")
+    t.equal(b.callCount, 1, "b was not called once")
+
+    t.end()
+})
+
 test("composeAsync with thisValue", function (t) {
     var a = sinon.stub().callsArg(0)
         , b = sinon.stub().callsArg(0)
