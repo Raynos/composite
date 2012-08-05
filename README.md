@@ -17,13 +17,13 @@ Compose functions together
 
     composed(3) // 18
 
-    var composedAsync = composeAsync(function (err, b, cb) {
-        cb(null, b * 2)
-    }, function (a, cb) {
-        cb(null, a * 3)
+    var composedAsync = composeAsync(function second(err, b, outer) {
+        outer(null, b * 2)
+    }, function first(a, second) {
+        second(null, a * 3)
     })
 
-    composedAsync(3, function (err, result) {
+    composedAsync(3, function outer(err, result) {
         // error === null, result === 18
     })
 
