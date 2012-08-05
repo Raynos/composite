@@ -2,6 +2,8 @@
 
 Compose functions together
 
+Function composition is a [mathematical concept](http://en.wikipedia.org/wiki/Function_composition) where a function is applied to the results of another (inner) function. In algebra this is often expressed as "g of f" when describing two functions "f" and "g", where g is applied to the results of f. The notation is typically: `(g ° f)(x)` or alternately `g(f(x))`.
+
 ## Example
 
     var compose = require("composite"),
@@ -54,7 +56,7 @@ Compose functions together
 
     composeAsync(function (err, data, cb) {
         // note how the callback is still the third parameter.
-        // This is because asyncCompose ensures cb is always at least the
+        // This is because asyncCompose ensures cb is always the
         // last parameter
         if (err) {
             return cb(err)
